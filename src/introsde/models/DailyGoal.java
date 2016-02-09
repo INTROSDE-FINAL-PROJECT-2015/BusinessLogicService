@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import static java.lang.Math.toIntExact;
 
 
 public class DailyGoal{

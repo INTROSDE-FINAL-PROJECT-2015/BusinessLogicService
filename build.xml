@@ -135,7 +135,8 @@
                 </classpath>
             </java>
         </target>
-        <target name="start.ProcessCentricService" depends="init, initDB, compile">
+
+        <target name="run" depends="init, compile">
             <echo message="app start introsde.rest.App in ${build.dir}" />
             <java classname="introsde.rest.App" classpath="${build.dir}" fork="true">
                 <arg value="$JAVA_OPTS  -cp" />
@@ -148,29 +149,8 @@
                 </classpath>
             </java>
         </target>
-        <target name="start.JuniTest" depends="initDB, compile">
-            <echo message="app start introsde.JuniTest in ${build.dir}" />
-            <java classname="introsde.test.TestRunner" classpath="${build.dir}" fork="true">
-                <arg value="$JAVA_OPTS  -cp" />
-                <classpath>
-                    <path location="build" />
-                    <fileset dir="WebContent/WEB-INF/lib">
-                        <include name="**/*.jar" />
-                        <include name="*.jar" />
-                    </fileset>
-                </classpath>
-            </java>
-            <antcall target="initDB"/>
-        </target>
 
-        <target name="initDB">
-            <echo message="REMOVING THE OLD DB AND CREATING A NEWONE" />
-            <exec executable="/bin/bash">
-                <arg value="init.sh"/>
-            </exec>
-            <echo message="DATABASE CREATED CORRECTLY" />
 
-        </target>
 
         <!-- Run the JUnit Tests -->
         <!-- Output is XML, could also be plain-->
