@@ -133,11 +133,12 @@ public class GetResources {
 
         String maxScore = String.valueOf(dgl.size()*100);
         int reached = 0;
+        DailyGoal useless = null;
         for (DailyGoal d : dgl){
             if (d.getValue()!=null && d.getValue().equals("T")){
                 reached = reached + 1;
             }
-        saveOrUpdateDailyGoal1(idPerson,dg);
+        useless = saveOrUpdateDailyGoal1(idPerson,dg);
         }
 
 
