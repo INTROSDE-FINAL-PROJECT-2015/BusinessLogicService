@@ -138,7 +138,7 @@ public class GetResources {
             if (d.getValue()!=null && d.getValue().equals("T")){
                 reached = reached + 1;
             }
-        useless = saveOrUpdateDailyGoal1(idPerson,dg);
+        useless = saveOrUpdateDailyGoal1(idPerson,d);
         }
 
 
