@@ -70,73 +70,6 @@ public class GetResources {
     */
 
     // Application integration
-    @GET
-    @Path("/peopleList")
-    @Produces({MediaType.APPLICATION_JSON })
-    public List<PeopleList> getPeopleList() {
-        Client client = ClientBuilder.newClient();
-		WebTarget webTarget = client.target(UERRELLE+"internal/people/");
-		Builder builder = webTarget.request(MediaType.APPLICATION_JSON);
-		Response res = builder.get();
-        System.out.println("SonoQUI");
-		List<PeopleList> pp = res.readEntity(new GenericType<List<PeopleList>>(){});
-        System.out.println("Sonoqua");
-        return pp;
-    }
-
-    @GET
-    @Path("/person/{idPerson}")
-    @Produces({MediaType.APPLICATION_JSON })
-    public Person getPerson(@PathParam("idPerson") int idPerson) {
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(UERRELLE+"internal/people/"+idPerson);
-        Builder builder = webTarget.request(MediaType.APPLICATION_JSON);
-        Response res = builder.get();
-        Person pp = null;
-        try{
-            pp = res.readEntity(Person.class);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        System.out.println("Sonoqua");
-        return pp;
-    }
-
-    //people/{idPerson}/goals
-
-    @GET
-    @Path("/person/{idPerson}/goals")
-    @Produces({MediaType.APPLICATION_JSON })
-    public List<Goal> getGoals(@PathParam("idPerson") int idPerson) {
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(UERRELLE + "internal/people/" + idPerson + "/goals");
-        Builder builder = webTarget.request(MediaType.APPLICATION_JSON);
-        Response res = builder.get();
-        List<Goal> pp = null;
-        try{
-            pp = res.readEntity(new GenericType<List<Goal>>(){});
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return pp;
-    }
-
-    @GET
-    @Path("/person/{idPerson}/dailygoals")
-    @Produces({MediaType.APPLICATION_JSON })
-    public List<DailyGoal> getDailyGoals(@PathParam("idPerson") int idPerson) {
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(UERRELLE + "internal/people/" + idPerson + "/dailygoals");
-        Builder builder = webTarget.request(MediaType.APPLICATION_JSON);
-        Response res = builder.get();
-        List<DailyGoal> pp = null;
-        try{
-            pp = res.readEntity(new GenericType<List<DailyGoal>>(){});
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return pp;
-    }
 
     @POST
     @Path("/person/{idPerson}/measure")
@@ -144,7 +77,6 @@ public class GetResources {
     @Consumes({ MediaType.APPLICATION_JSON })
     public GoalResponse checkGoal(@PathParam("idPerson") int idPerson, CustomMeasure m) {
 
-        System.out.println("CIAONE");
 
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(UERRELLE + "internal/people/" + idPerson + "/goals");
@@ -198,17 +130,20 @@ public class GetResources {
     @Consumes({ MediaType.APPLICATION_JSON })
     public Score getScore(@PathParam("idPerson") int idPerson,List<DailyGoal> dgl){
 
+
         String maxScore = String.valueOf(dgl.size()*100);
         int reached = 0;
         for (DailyGoal d : dgl){
             if (d.getValue()!=null && d.getValue().equals("T")){
                 reached = reached + 1;
             }
+        saveOrUpdateDailyGoal1(idPerson,dg);
         }
+
 
         return new Score(maxScore,String.valueOf(reached*100));
     }
-    
+
     public Quote getQuotation(){
         Client client3 = ClientBuilder.newClient();
         WebTarget webTarget3 = client3.target(UERRELLE + "external/quote");
@@ -227,23 +162,16 @@ public class GetResources {
         return song;
     }
 
-    @GET
-    @Path("/quote")
-    @Produces({MediaType.APPLICATION_JSON })
-    public Quote getQuote() {
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(UERRELLE+"external/quote");
-        Builder builder = webTarget.request(MediaType.APPLICATION_JSON);
+    public DailyGoal saveOrUpdateDailyGoal1(int idPerson, DailyGoal dg){
+    dg.setIdPerson(idPerson);
+    Client client2 = ClientBuilder.newClient();
+    //http://127.0.1.1:5700/sdelab/internal/people/1/dailygoals
+    System.out.println(UERRELLE + "internal/people/" + idPerson + "/dailygoals");
+    WebTarget webTarget2 = client2.target(UERRELLE + "internal/people/" + idPerson + "/dailygoals");
+    Builder builder2 = webTarget2.request(MediaType.APPLICATION_JSON);
+    Response res2 = builder2.post(Entity.json(dg));
+    DailyGoal gr = res2.readEntity(DailyGoal.class);
+    return gr;
+}
 
-        Response res = builder.get();
-        System.out.println("SonoQUI");
-        Quote pp = null;
-        try{
-        pp = res.readEntity(Quote.class);
-        } catch (Exception e){
-        e.printStackTrace();
-        }
-        System.out.println("Sonoqua");
-        return pp;
-    }
 }
